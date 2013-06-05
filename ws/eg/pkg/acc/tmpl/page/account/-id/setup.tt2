@@ -38,12 +38,8 @@
   INCLUDE 'block/acc/account_contact.tt2', id = acc_id, all = 't';
   div_end;
 
-  %]<div class='well form-horizontal'>[%
-    IF acc_id == session.account_id;
-      INCLUDE block/acc/psw_change_own.tt2;
-    ELSE;
-      INCLUDE block/acc/psw_change.tt2;
-    END;
+  %]<div class='well form-horizontal'> [%
+    INCLUDE block/acc/psw_change.tt2;
     %]
   [%
   div_end;
