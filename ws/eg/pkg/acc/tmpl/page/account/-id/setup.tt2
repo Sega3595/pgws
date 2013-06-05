@@ -39,28 +39,13 @@
   div_end;
 
   %]<div class='well form-horizontal'>[%
-    %]<form id="form2" onsubmit="return false"><legend>Изменить пароль</legend>
-    <fieldset>[%
-      div_begin(offset=2);
-        span(id='form2___err', class='red form2err');
-      div_end;
-
-      controlGroup_begin(label = 'Введите пароль');
-      input(type='hidden' , name = 'id', value = acc_id);
-      input(class='input-xlarge', name='psw_1');
-      span(id='form2_psw_1_err', class='help-inline');
-      controlGroup_end;
-
-      controlGroup_begin(label = 'Повторите ввод пароля');
-      input(class='input-xlarge', name='psw_2');
-      span(id='form2_psw_2_err', class='help-inline');
-      controlGroup_end;
-
-      btn(id='send' onclick='return psw_change();', class='btn-primary', name='Сохранить');
-      alert_begin(id='form2_result');alert_end;
-      alert_begin(id='form2_status');alert_end;
-    %]</fieldset>
-    </form>[%
+    IF acc_id == session.account_id;
+      INCLUDE block/acc/psw_change_own.tt2;
+    ELSE;
+      INCLUDE block/acc/psw_change.tt2;
+    END;
+    %]
+  [%
   div_end;
 
   %]<div class='well form-horizontal'>[%
@@ -110,13 +95,6 @@ var form1err = function(formid, res) {
 var contact_add = function(){
   var formOptions = {statusBlock: '#form1_status'};
   api_form('account.contact.add','#form1', form1ok, form1err, formOptions);
-  return false;
-};
-
-var psw_change = function(){
-  $('#form2___err').text('');
-  var formOptions = {statusBlock: '#form2_status'};
-  api_form('account.password.change','#form2', form1ok, form1err, formOptions);
   return false;
 };
 

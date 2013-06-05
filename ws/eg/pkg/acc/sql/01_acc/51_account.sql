@@ -391,25 +391,58 @@ SELECT ws.pg_c('f', 'account_lookup', 'Поиск пользователя по 
 
 /* ------------------------------------------------------------------------- */
 
-CREATE OR REPLACE FUNCTION account_password_change(a_id ws.d_id, a_psw_1 acc.d_password, a_psw_2 acc.d_password) RETURNS BOOLEAN VOLATILE LANGUAGE 'plpgsql' AS
+CREATE OR REPLACE FUNCTION account_password_change(a_id ws.d_id, a_psw_new acc.d_password, a_psw_new_repeat acc.d_password) RETURNS BOOLEAN VOLATILE LANGUAGE 'plpgsql' AS
 $_$
--- a_id:      ID Пользователя
--- a_psw_1:   Новый пароль
--- a_psw_2:   Повторное значение пароля
+-- a_id:               ID Пользователя
+-- a_psw_new:          Новый пароль
+-- a_psw_new_repeat:   Повторное значение пароля
   BEGIN
-
-    IF $2 != $3 THEN
+    IF a_psw_new != a_psw_new_repeat THEN
       RAISE EXCEPTION '%', ws.error_str(acc.const_error_passwords_match());
     END IF;
 
     UPDATE wsd.account SET
-      psw = $2
-      WHERE id = $1;
-    
-    RETURN TRUE;  
-    
+      psw = a_psw_new
+      WHERE id = a_id
+    ;    
+    RETURN TRUE;      
   END
 $_$;
-SELECT pg_c('f', 'account_password_change', 'Смена пароля пользователю');
+SELECT pg_c('f', 'account_password_change', 'Смена пароля пользователя без запроса пароля');
+
+/* ------------------------------------------------------------------------- */
+
+CREATE OR REPLACE FUNCTION account_password_change_own(a_id ws.d_id, a_psw_old acc.d_password, a_psw_new acc.d_password, a_psw_new_repeat acc.d_password) RETURNS BOOLEAN VOLATILE LANGUAGE 'plpgsql' AS
+$_$
+-- a_id:               ID Пользователя
+-- a_psw_old:          Старый пароль
+-- a_psw_new:          Новый пароль
+-- a_psw_new_repeat:   Повторное значение пароля
+  DECLARE
+    r wsd.account;
+  BEGIN
+
+    IF a_psw_new != a_psw_new_repeat THEN
+      RAISE EXCEPTION '%', ws.error_str(acc.const_error_passwords_match());
+    END IF;
+
+    SELECT INTO r
+      *
+      FROM wsd.account
+      WHERE id = a_id AND psw = a_psw_old
+    ;
+    IF FOUND THEN
+    
+      UPDATE wsd.account SET
+        psw = a_psw_new
+        WHERE id = r.id
+      ;
+    ELSE 
+      RAISE EXCEPTION '%', ws.error_str(acc.const_error_password());
+    END IF;
+    RETURN TRUE;
+  END
+$_$;
+SELECT pg_c('f', 'account_password_change_own', 'Смена пароля пользователя с запросом пароля');
 
 /* ------------------------------------------------------------------------- */

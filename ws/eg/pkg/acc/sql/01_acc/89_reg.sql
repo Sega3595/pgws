@@ -76,8 +76,9 @@ INSERT INTO ws.method (code, class_id, action_id, cache_id, rvf_id, code_real) V
 ;
 
 INSERT INTO ws.method (code, class_id, action_id, cache_id, rvf_id, is_write, code_real) VALUES
-  ('account.contact.add',:AID, 1, 1, 2, TRUE, 'acc.account_contact_add')
-, ('account.password.change',:AID, 1, 4, 2, TRUE, 'acc.account_password_change' )
+  ('account.contact.add',         :AID, 1, 1, 2, TRUE, 'acc.account_contact_add')
+, ('account.password.change',     :AID, 3, 1, 2, TRUE, 'acc.account_password_change' )
+, ('account.password.change.own', :AID, 4, 1, 2, TRUE, 'acc.account_password_change_own')
 ;
 /* ------------------------------------------------------------------------- */
 INSERT INTO method (code, class_id , action_id, cache_id, rvf_id, code_real) VALUES

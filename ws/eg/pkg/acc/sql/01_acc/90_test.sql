@@ -84,3 +84,6 @@ SELECT  status_id,login,name,is_psw_plain,is_ip_checked FROM wsd.account where n
 /* ------------------------------------------------------------------------- */
 SELECT acc.account_password_change(-1, 'Test111', 'Test111');
 SELECT psw FROM wsd.account WHERE id=-1;
+
+SELECT acc.account_password_change_own(-1, 'Test111', 'Test222', 'Test222');
+SELECT psw FROM wsd.account WHERE id=-1;

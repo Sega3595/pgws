@@ -73,3 +73,11 @@ INSERT 0 1
 ---------
  Test111
 
+ account_password_change_own 
+-----------------------------
+ t
+
+   psw   
+---------
+ Test222
+
